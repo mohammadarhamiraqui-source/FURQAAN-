@@ -1,0 +1,40 @@
+:root {
+  --bg: #0f1724;
+  --card: #0b1220;
+  --accent: #ff6b81;
+  --accent-2: #ffd166;
+  --muted: #9aa4b2;
+  --text: #e6eef6;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background:
+    radial-gradient(800px 400px at 10% 20%, rgba(255, 107, 129, 0.06), transparent 8%),
+    radial-gradient(600px 300px at 90% 80%, rgba(255, 209, 102, 0.04), transparent 10%),
+    var(--bg);
+  color: var(--text);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Utilities etc. you might need */
+textarea {
+  font-family: inherit;
+  color: inherit;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  padding: 12px;
+  resize: vertical;
+}
+
+button {
+  font-family: inherit;
+}
