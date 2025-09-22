@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>I'm Sorry — KuchuPuchu</title>
+  <style>
+    :root{
+      --bg:#0f1724;
+      --card:#0b1220;
+      --accent:#ff6b81;
+      --accent-2:#ffd166;
+      --muted:#9aa4b2;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:
+        radial-gradient(800px 400px at 10% 20%, rgba(255,107,129,0.06), transparent 8%),
+        radial-gradient(600px 300px at 90% 80%, rgba(255,209,102,0.04), transparent 10%),
+        var(--bg);
+      color:#e6eef6;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+    .card{
+      width:100%;
+      max-width:920px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:16px;
+      box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+      padding:32px;
+      display:grid;
+      grid-template-columns: 1fr 360px;
+      gap:28px;
+      align-items:center;
+      border:1px solid rgba(255,255,255,0.03);
+    }
+    @media (max-width:880px){
+      .card{grid-template-columns:1fr; padding:20px}
+    }
+    .left h1{
+      margin:0 0 8px 0;
+      font-size:36px;
+      line-height:1.05;
+      letter-spacing:-0.02em;
+    }
+    .left p{margin:0 0 18px 0; color:var(--muted); font-size:15px}
+    .buttons{display:flex; gap:12px; flex-wrap:wrap}
+    .btn{
+      padding:10px 16px;
+      border-radius:10px;
+      border:0;
+      cursor:pointer;
+      font-weight:600;
+      background:linear-gradient(90deg,var(--accent),#ff9aa2);
+      color:#fff;
+      box-shadow: 0 6px 18px rgba(255,107,129,0.12);
+    }
+    .btn.ghost{
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.06);
+      color:var(--muted);
+      font-weight:600;
+      backdrop-filter: blur(4px);
+    }
+
+    .right{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:12px;
+      padding:18px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+    }
+    .avatar{
+      width:140px; height:140px; border-radius:50%;
+      background: conic-gradient(from 120deg, #ff9aa2, #ffd166, #ffd166, #ff9aa2);
+      display:grid; place-items:center;
+      font-size:40px; color:#071028; font-weight:800;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.45), inset 0 -8px 30px rgba(255,255,255,0.06);
+      margin-bottom:16px;
+    }
+    .note{
+      text-align:center;
+      color:var(--muted);
+      font-size:14px;
+      max-width:260px;
+    }
+    .small{
+      font-size:13px; color:var(--muted); margin-top:10px;
+    }
+
+    /* little confetti pieces */
+    .confetti {position:fixed; left:0; top:0; pointer-events:none; width:100%; height:100%; overflow:visible;}
+    .confetti i{
+      position:absolute; width:8px; height:12px; opacity:0;
+      transform-origin:center;
+      will-change: transform, opacity;
+      border-radius:2px;
+    }
+
+    footer{margin-top:18px; color:var(--muted); font-size:13px; text-align:center;}
+  </style>
+</head>
+<body>
+  <div class="card" role="main" aria-labelledby="apologyTitle">
+    <div class="left">
+      <h1 id="apologyTitle">I'm sorry, KuchuPuchu 💌</h1>
+      <p>Sometimes words fall short — this little page is my way of saying it. Press the button to send a gentle apology card with a tiny animation.</p>
+
+      <div class="buttons">
+        <button class="btn" id="sendBtn">Send apology • ✉️</button>
+        <button class="btn ghost" id="messageBtn">Write a message</button>
+      </div>
+
+      <div id="formWrap" style="margin-top:18px; display:none;">
+        <textarea id="msg" placeholder="Type your message..." style="width:100%; min-height:84px; border-radius:10px; padding:12px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:inherit"></textarea>
+        <div style="display:flex; gap:10px; margin-top:8px;">
+          <button class="btn" id="sendMsgBtn">Send</button>
+          <button class="btn ghost" id="cancelBtn">Cancel</button>
+        </div>
+      </div>
+
+      <footer>Made with ❤️ — KuchuPuchu apology demo</footer>
+    </div>
+
+    <div class="right" aria-hidden="false">
+      <div class="avatar">KP</div>
+      <div class="note">A small gesture can mean a lot. Let them know you care.</div>
+      <div class="small">Click “Send apology” to show confetti and a toast.</div>
+    </div>
+  </div>
+
+  <div class="confetti" id="confettiRoot" aria-hidden="true"></div>
+
+  <script>
+    // simple confetti generator (lightweight)
+    const root = document.getElementById('confettiRoot');
+    function spawnConfetti(count=24){
+      const colors = ['#ff6b81','#ffd166','#9ad3bc','#a0c4ff','#cdb4db'];
+      for(let i=0;i<count;i++){
+        const el = document.createElement('i');
+        el.style.left = (50 + (Math.random()*60-30)) + 'vw';
+        el.style.top = (-10 + Math.random()*10) + 'vh';
+        el.style.background = colors[Math.floor(Math.random()*colors.length)];
+        el.style.opacity = 1;
+        el.style.transform = 'translateY(0) rotate(' + (Math.random()*360) + 'deg)';
+        root.appendChild(el);
+
+        // animate
+        const fall = 800 + Math.random()*1000;
+        const rotate = (Math.random()*720 - 360);
+        el.animate([
+          { transform: `translateY(0) rotate(0deg)`, opacity:1 },
+          { transform: `translateY(${70 + Math.random()*90}vh) rotate(${rotate}deg)`, opacity:0.05 }
+        ], {duration: fall, easing: 'cubic-bezier(.2,.8,.2,1)'});
+        // remove after
+        setTimeout(()=> el.remove(), fall + 50);
+      }
+    }
+
+    // show a temporary toast
+    function toast(text, ms=2200){
+      const t = document.createElement('div');
+      t.textContent = text;
+      Object.assign(t.style, {
+        position:'fixed', left:'50%', transform:'translateX(-50%)',
+        bottom:'30px', background:'rgba(6,10,18,0.8)', color:'#fff', padding:'10px 16px',
+        borderRadius:'10px', backdropFilter:'blur(4px)', zIndex:9999, fontWeight:600
+      });
+      document.body.appendChild(t);
+      setTimeout(()=> t.style.opacity = '0', ms-300);
+      setTimeout(()=> t.remove(), ms);
+    }
+
+    document.getElementById('sendBtn').addEventListener('click', ()=>{
+      spawnConfetti(36);
+      toast('Apology sent ✉️');
+    });
+
+    const messageBtn = document.getElementById('messageBtn');
+    const formWrap = document.getElementById('formWrap');
+    const cancelBtn = document.getElementById('cancelBtn');
+    messageBtn.addEventListener('click', ()=> formWrap.style.display = 'block');
+    cancelBtn.addEventListener('click', ()=> formWrap.style.display = 'none');
+
+    document.getElementById('sendMsgBtn').addEventListener('click', ()=>{
+      const val = document.getElementById('msg').value.trim();
+      if(!val) { toast('Please type a short message.'); return; }
+      spawnConfetti(28);
+      toast('Message sent — good luck!');
+      document.getElementById('msg').value = '';
+      formWrap.style.display = 'none';
+    });
+
+    // Accessibility: allow Enter to send when focused on textarea + Ctrl/Cmd
+    document.getElementById('msg').addEventListener('keydown', (e)=>{
+      if((e.ctrlKey || e.metaKey) && e.key === 'Enter'){
+        document.getElementById('sendMsgBtn').click();
+      }
+    });
+  </script>
+</body>
+</html>
